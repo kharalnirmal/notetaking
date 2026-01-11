@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const Create = ({ initial }) => {
   const [notes, setnotes] = useState(initial);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+
   const createNote = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
@@ -20,9 +22,41 @@ const Create = ({ initial }) => {
 
       const data = await result.json(); // Parse the JSON from the response
       console.log("Actual data:", data); // Now you'll see the object with success, message, and your note!
+
+      if (data.success) {
+        setnotes([data.data, ...notes]); // Add new note to the beginning of the list
+        setTitle(""); // Clear title input
+        setContent(""); // Clear content input
+        toast.success("Note created successfully!");
+      } else {
+        toast.error("Failed to create note");
+      }
       setLoading(false);
     } catch (error) {
       console.log("there is error ", error);
+      toast.error("Failed to create note");
+      setLoading(false);
+    }
+  };
+
+  const deleteNote = async (id) => {
+    try {
+      const resultNote = await fetch(`/api/create/${id}`, {
+        method: "DELETE",
+      });
+
+      const result = await resultNote.json();
+      console.log("Delete response:", result); // Check the response
+
+      if (result.success) {
+        setnotes((notes) => notes.filter((note) => note._id !== id));
+        toast.success("Note Deleted Successfully");
+      } else {
+        toast.error(result.error || "Failed to delete note");
+      }
+    } catch (error) {
+      console.log("there is error ", error);
+      toast.error("Failed to delete note");
     }
   };
 
@@ -110,7 +144,10 @@ const Create = ({ initial }) => {
                     <button className="flex-1 bg-blue-500 hover:bg-blue-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors">
                       Edit
                     </button>
-                    <button className="flex-1 bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors">
+                    <button
+                      onClick={() => deleteNote(note._id)}
+                      className="flex-1 bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors"
+                    >
                       Delete
                     </button>
                   </div>
