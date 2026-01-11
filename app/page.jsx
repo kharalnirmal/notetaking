@@ -2,6 +2,10 @@ import connectDB from "@/lib/db";
 import Create from "./components/Create.jsx";
 import Note from "@/models/note.js";
 
+// Disable caching for this page to ensure fresh data
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function getNote() {
   await connectDB();
 

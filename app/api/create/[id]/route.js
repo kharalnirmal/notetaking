@@ -2,6 +2,7 @@ import connectDB from "@/lib/db";
 
 import Note from "@/models/note";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function DELETE(request, { params }) {
   const { id } = await params; // Need to await params in Next.js 15+
@@ -19,6 +20,10 @@ export async function DELETE(request, { params }) {
         { status: 404 }
       );
     }
+
+    // Revalidate the home page to clear cache
+    revalidatePath("/");
+
     return NextResponse.json(
       {
         success: true,
@@ -58,6 +63,10 @@ export async function PUT(request, { params }) {
         { status: 404 }
       );
     }
+
+    // Revalidate the home page to clear cache
+    revalidatePath("/");
+
     return NextResponse.json(
       {
         success: true,

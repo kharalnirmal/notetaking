@@ -1,6 +1,7 @@
 import connectDB from "@/lib/db";
 import Note from "@/models/note";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -26,6 +27,9 @@ export async function POST(request) {
     await connectDB();
     const body = await request.json();
     const newNote = await Note.create(body);
+
+    // Revalidate the home page to clear cache
+    revalidatePath("/");
 
     return NextResponse.json(
       {
