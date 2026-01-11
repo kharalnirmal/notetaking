@@ -21,7 +21,7 @@ const NoteSchema = new mongoose.Schema({
   },
 });
 
-NoteSchema.pre("save", async function (next) {
+NoteSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
