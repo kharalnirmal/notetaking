@@ -150,15 +150,30 @@ const Create = ({ initial }) => {
             Your Notes ({notes.length})
           </h1>
 
-          {notes.length === 0 ? (
-            <div className="flex flex-col justify-center items-center py-12">
-              <p className="text-gray-400 text-lg">
-                📝 No notes yet. Create your first note above!
+          <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-3">
+            {/* Permanent Welcome Note */}
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg p-4 border border-indigo-300 rounded-xl">
+              <h2 className="mb-2 font-bold text-white text-base">
+                Welcome to Noxira
+              </h2>
+              <p className="mb-3 text-indigo-50 text-sm whitespace-pre-wrap">
+                Hey, I'm Nirmal, the creator of Noxira. This is your space to
+                write, think, and create freely. Make it yours — and enjoy the
+                flow.
               </p>
+              <div className="text-indigo-200 text-xs">
+                <p>💜 Permanent Welcome Note</p>
+              </div>
             </div>
-          ) : (
-            <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-3">
-              {notes.map((note) => (
+
+            {notes.length === 0 ? (
+              <div className="flex flex-col justify-center items-center col-span-full py-12">
+                <p className="text-gray-400 text-lg">
+                  📝 No notes yet. Create your first note above!
+                </p>
+              </div>
+            ) : (
+              notes.map((note) => (
                 <div
                   key={note._id}
                   className="bg-gradient-to-br from-indigo-50 to-white shadow-md hover:shadow-xl p-4 border border-indigo-200 rounded-xl hover:scale-105 transition-all duration-200"
@@ -267,9 +282,9 @@ const Create = ({ initial }) => {
                     </>
                   )}
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </>
