@@ -9,6 +9,49 @@ const Create = ({ initial }) => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+
+  const startEdit = (note) => {
+    setEditingId(note._id);
+    setEditTitle(note.title);
+    setEditContent(note.content);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditTitle("");
+    setEditContent("");
+  };
+
+  const updateNote = async (id) => {
+    if (!editTitle.trim() || !editContent.trim()) return;
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/create/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: editTitle, content: editContent }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Notes update successfully");
+        setnotes(
+          notes.map((notes) => (notes._id === id ? result.data : notes))
+        );
+        setEditingId(null);
+        setEditTitle("");
+        setEditContent("");
+      }
+      setLoading(false);
+    } catch (error) {
+      toast.error("Updating Failed !!");
+    }
+  };
+
   const createNote = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
@@ -112,45 +155,90 @@ const Create = ({ initial }) => {
                   key={note._id}
                   className="bg-gradient-to-br from-indigo-50 to-white shadow-md hover:shadow-xl p-4 border border-indigo-200 rounded-xl hover:scale-105 transition-all duration-200"
                 >
-                  <h2 className="mb-2 font-bold text-gray-800 text-base line-clamp-2">
-                    {note.title}
-                  </h2>
-                  <p className="mb-3 text-gray-600 text-sm line-clamp-3">
-                    {note.content}
-                  </p>
-                  <div className="space-y-1 mb-3 text-gray-500 text-xs">
-                    <p>
-                      📅 Created:{" "}
-                      {new Date(note.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                    <p>
-                      ✏️ Updated:{" "}
-                      {new Date(note.updatedAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button className="flex-1 bg-blue-500 hover:bg-blue-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors">
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteNote(note._id)}
-                      className="flex-1 bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  {editingId === note._id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="mb-2 p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-600 w-full text-gray-800 text-sm"
+                        placeholder="Edit title"
+                      />
+                      <textarea
+                        rows={3}
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        className="mb-3 p-2 border border-gray-400 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-600 w-full text-gray-800 text-sm"
+                        placeholder="Edit content"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => updateNote(note._id)}
+                          className="flex-1 bg-green-500 hover:bg-green-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors"
+                        >
+                          {loading ? "Saving..." : "Save"}
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="flex-1 bg-gray-500 hover:bg-gray-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    // view mode
+                    <>
+                      <h2 className="mb-2 font-bold text-gray-800 text-base line-clamp-2">
+                        {note.title}
+                      </h2>
+                      <p className="mb-3 text-gray-600 text-sm line-clamp-3">
+                        {note.content}
+                      </p>
+                      <div className="space-y-1 mb-3 text-gray-500 text-xs">
+                        <p>
+                          📅 Created:{" "}
+                          {new Date(note.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </p>
+                        <p>
+                          ✏️ Updated:{" "}
+                          {new Date(note.updatedAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => startEdit(note)}
+                          className="flex-1 bg-blue-500 hover:bg-blue-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteNote(note._id)}
+                          className="flex-1 bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-md text-white text-sm transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
