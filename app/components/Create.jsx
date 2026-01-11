@@ -12,6 +12,7 @@ const Create = ({ initial }) => {
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
+  const [expandedNotes, setExpandedNotes] = useState({});
 
   const startEdit = (note) => {
     setEditingId(note._id);
@@ -23,6 +24,13 @@ const Create = ({ initial }) => {
     setEditingId(null);
     setEditTitle("");
     setEditContent("");
+  };
+
+  const toggleExpand = (id) => {
+    setExpandedNotes((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const updateNote = async (id) => {
@@ -192,9 +200,28 @@ const Create = ({ initial }) => {
                       <h2 className="mb-2 font-bold text-gray-800 text-base line-clamp-2">
                         {note.title}
                       </h2>
-                      <p className="mb-3 text-gray-600 text-sm line-clamp-3">
-                        {note.content}
-                      </p>
+                      <div className="mb-3">
+                        <p
+                          className={`text-gray-600 text-sm whitespace-pre-wrap ${
+                            !expandedNotes[note._id] &&
+                            note.content.length > 150
+                              ? "line-clamp-3"
+                              : ""
+                          }`}
+                        >
+                          {note.content}
+                        </p>
+                        {note.content.length > 150 && (
+                          <button
+                            onClick={() => toggleExpand(note._id)}
+                            className="mt-1 font-medium text-indigo-600 text-xs hover:underline"
+                          >
+                            {expandedNotes[note._id]
+                              ? "Show less"
+                              : "Read more"}
+                          </button>
+                        )}
+                      </div>
                       <div className="space-y-1 mb-3 text-gray-500 text-xs">
                         <p>
                           📅 Created:{" "}
