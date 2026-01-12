@@ -153,6 +153,6 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ---
 
-Made with ❤️ by Nirmal Kharal | [Live Demo](https://your-deployment-url.vercel.app)
+Made with ❤️ by Nirmal Kharal | [Live Demo](https://noxira.vercel.app/)
 
 Made with ❤️ using Next.js and MongoDB
