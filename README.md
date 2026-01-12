@@ -123,26 +123,6 @@ notetaking/
 - `PUT /api/create/[id]` - Update a note
 - `DELETE /api/create/[id]` - Delete a note
 
-## 🚀 Deployment
-
-### Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
-
-1. Push your code to a Git repository
-2. Import your repository to Vercel
-3. Add your environment variables
-4. Deploy!
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## 📚 Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
-- [React Documentation](https://react.dev) - Learn React
-- [MongoDB Documentation](https://docs.mongodb.com) - MongoDB guides
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Tailwind CSS reference
-
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
